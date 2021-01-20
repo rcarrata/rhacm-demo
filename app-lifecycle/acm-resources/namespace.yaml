@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: etherpad
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: acm-app-secret
+  namespace: etherpad
+data:
+  accessToken: YmM2M2JhNTFhOWI5MWY4N2ExMGY5ZmEzMGQ4Mzg1MzNmMzhkOGY5YQ==
+  user: YXZhbGVyb3I=
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: toweraccess
+  namespace: etherpad
+data:
+  host: aHR0cHM6Ly9hbnNpYmxlLXRvd2VyLXdlYi1zdmMtdG93ZXIuYXBwcy5hd3MtbWFuYWdlZC0xLjliMWUuc2FuZGJveDEyNDMub3BlbnRsYy5jb20v
+  token: M1ZHdVM4SzdaZ1VYRHN4VzQxZEVtc2ZhdlRqM3BY
+type: Opaque
+
