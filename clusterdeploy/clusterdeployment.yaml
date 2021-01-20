@@ -1,0 +1,123 @@
+apiVersion: hive.openshift.io/v1
+kind: ClusterDeployment
+metadata:
+  name: dev-aws
+  namespace: dev-aws
+  labels:
+    cloud: 'AWS'
+    region: 'eu-central-1'
+    vendor: 'OpenShift'
+spec:
+  baseDomain: e5e8.sandbox1805.opentlc.com
+  clusterName: dev-aws
+  controlPlaneConfig:
+    servingCertificates: {}
+  installed: false
+  platform:
+    aws:
+      credentialsSecretRef:
+        name: dev-aws-aws-creds
+      region: eu-central-1
+  provisioning:
+    installConfigSecretRef:
+      name: dev-aws-install-config
+    sshPrivateKeySecretRef:
+      name: dev-aws-ssh-private-key
+    imageSetRef:
+       #quay.io/openshift-release-dev/ocp-release:4.6.1-x86_64
+      name: img4.6.1-x86-64
+  pullSecretRef:
+    name: dev-aws-pull-secret
+---
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  labels:
+    cloud: Amazon
+    region: eu-central-1
+    name: dev-aws
+    vendor: OpenShift
+    env: 'dev'
+  name: dev-aws
+spec:
+  hubAcceptsClient: true
+---
+apiVersion: hive.openshift.io/v1
+kind: MachinePool
+metadata:
+  name: dev-aws-worker
+  namespace: dev-aws
+spec:
+  clusterDeploymentRef:
+    name: dev-aws
+  name: worker
+  platform:
+    aws:
+      rootVolume:
+        iops: 100
+        size: 100
+        type: gp2
+      type: m5.xlarge
+  replicas: 3
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dev-aws-pull-secret
+  namespace: dev-aws
+stringData:
+  .dockerconfigjson: # injected on create
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dev-aws-install-config
+  namespace: dev-aws
+type: Opaque
+data:
+  # Base64 encoding of install-config yaml
+  install-config.yaml: xxx
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dev-aws-ssh-private-key
+  namespace: dev-aws
+stringData:
+  ssh-privatekey: # injected on create
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: dev-aws-aws-creds
+  namespace: dev-aws
+stringData:
+  aws_access_key_id: xxxx
+  aws_secret_access_key: # injected on create
+---
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: dev-aws
+  namespace: dev-aws
+spec:
+  clusterName: dev-aws
+  clusterNamespace: dev-aws
+  clusterLabels:
+    cloud: Amazon
+    vendor: OpenShift
+  applicationManager:
+    enabled: true
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: true
+  certPolicyController:
+    enabled: true
+  iamPolicyController:
+    enabled: true
+  version: 2.1.0
+

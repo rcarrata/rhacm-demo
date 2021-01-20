@@ -1,0 +1,17 @@
+apiVersion: apps.open-cluster-management.io/v1
+kind: Subscription
+metadata:
+  name: fahclient-subscription
+  namespace: fahclient
+  labels:
+    app: fahclient-centos8
+  annotations:
+    apps.open-cluster-management.io/github-path: app-lifecycle/fahclient
+    apps.open-cluster-management.io/github-branch: master
+spec:
+  channel: fahclient/fahclient-centos8
+  placement:
+    placementRef:
+      name: fah-placement
+      kind: PlacementRule
+

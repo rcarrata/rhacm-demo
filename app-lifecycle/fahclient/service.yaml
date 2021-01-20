@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: fahclient-centos8
+  name: fahclient-centos8
+  namespace: fahclient
+spec:
+  ports:
+  - port: 7396
+    protocol: TCP
+    targetPort: 7396
+  selector:
+    app: fahclient-centos8
+  sessionAffinity: None
+  type: ClusterIP

@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: fahclient-centos8
+  name: fahclient
+  namespace: fahclient
+spec:
+  port:
+    targetPort: 7396
+  to:
+    kind: Service
+    name: fahclient-centos8
+    weight: 100
